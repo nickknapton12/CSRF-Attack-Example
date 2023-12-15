@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -94,6 +95,112 @@ func PostLoginHandler(sessions *Sessions, logins *Users) gin.HandlerFunc {
 		sessions.Lock.Unlock()
 
 		c.SetCookie("token", userId, 24*3600, "/", "localhost", false, false)
-		c.Status(200)
+		c.Redirect(http.StatusFound, "/account")
+	}
+}
+
+func GetAccountHandler(sessions *Sessions, accounts *Accounts) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token, err := c.Request.Cookie("token")
+
+		if err != nil {
+			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		if token.Value == "" {
+			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		sessions.Lock.Lock()
+		session, ok := sessions.Sessions[token.Value]
+		sessions.Lock.Unlock()
+
+		if !ok {
+			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		accounts.Lock.Lock()
+		account, ok := accounts.Accounts[session.Username]
+		accounts.Lock.Unlock()
+
+		c.JSON(http.StatusOK, account)
+	}
+}
+
+type TransferRequest struct {
+	To     string  `form:"to" binding:"required"`
+	Amount float32 `form:"amount" binding:"required"`
+}
+
+func PostTransferHandler(sessions *Sessions, accounts *Accounts) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token, err := c.Request.Cookie("token")
+
+		if err != nil {
+			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		if token.Value == "" {
+			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		sessions.Lock.Lock()
+		session, ok := sessions.Sessions[token.Value]
+		sessions.Lock.Unlock()
+
+		if !ok {
+			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		if session.Expiry.Compare(time.Now()) <= 0 {
+			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		transferInfo := TransferRequest{}
+
+		if err := c.Bind(&transferInfo); err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+
+		accounts.Lock.Lock()
+		fromAccount, ok := accounts.Accounts[session.Username]
+		if !ok {
+			c.Status(http.StatusBadRequest)
+			accounts.Lock.Unlock()
+			return
+		}
+		toAccount, ok := accounts.Accounts[transferInfo.To]
+		if !ok {
+			c.Status(http.StatusBadRequest)
+			accounts.Lock.Unlock()
+			return
+		}
+		if fromAccount.Balance < transferInfo.Amount {
+			c.Status(http.StatusBadRequest)
+			accounts.Lock.Unlock()
+			return
+		}
+		fromAccount.Balance -= transferInfo.Amount
+		toAccount.Balance += transferInfo.Amount
+		accounts.Accounts[session.Username] = fromAccount
+		accounts.Accounts[transferInfo.To] = toAccount
+		accounts.Lock.Unlock()
+		fmt.Println(toAccount)
+		c.Redirect(http.StatusFound, "/account")
 	}
 }

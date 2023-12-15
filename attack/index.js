@@ -1,4 +1,4 @@
 window.onload = () => {
     // Attack here
-    console.log("helloworld");
+    document.getElementById("attackform").submit();
 }

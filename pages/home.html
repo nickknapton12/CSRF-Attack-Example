@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bank of Cryptolicious</title>
+</head>
+<body>
+    <p>Your friendly neighborhood plain html bank, because life is more secure without css.</p>
+    <a href="/login">Login</a>
+</body>
+<script>
+    fetch('http://localhost:8123/api/account', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        mode: 'no-cors'
+    }).then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        document.getElementById('accountname').innerHTML = data.Username;
+        document.getElementById('welcomemessage').style.display = 'block';
+        document.getElementById('accountbalance').innerHTML = data.Balance;
+        document.getElementById('accountinfo').style.display = 'block';
+        console.log(data);
+    });
+</script>
+</html>
