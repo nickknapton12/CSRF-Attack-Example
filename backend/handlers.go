@@ -10,8 +10,8 @@ import (
 )
 
 type Login struct {
-	Username string `form:"username" binding:"required"`
-	Password string `form:"password" binding:"required"`
+	Username string
+	Password string
 }
 
 func PostInvalidate(sessions *Sessions) gin.HandlerFunc {
@@ -35,6 +35,7 @@ func PostInvalidate(sessions *Sessions) gin.HandlerFunc {
 		sessions.Lock.Unlock()
 
 		c.Status(http.StatusOK)
+		c.Redirect(http.StatusFound, "/login")
 	}
 }
 
@@ -71,15 +72,15 @@ func PostLoginHandler(sessions *Sessions, logins *Users) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		loginInfo := Login{}
 
-		if err := c.Bind(&loginInfo); err != nil {
+		if err := c.BindJSON(&loginInfo); err != nil {
 			c.Status(http.StatusBadRequest)
 			return
 		}
 
 		// check if user exists
 		logins.Lock.Lock()
-		if logins.Logins[loginInfo.Username] == "" {
-			c.Status(http.StatusBadRequest)
+		if logins.Logins[loginInfo.Username] != loginInfo.Password {
+			c.Status(http.StatusUnauthorized)
 			logins.Lock.Unlock()
 			return
 		}

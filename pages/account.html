@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Account | Bank of Cryptolicious</title>
 </head>
+
 <body>
     <h1>Your Account</h1>
     <div id="welcomemessage" style="display: none;">
         <p>Welcome, <span id="accountname"></span></p>
     </div>
+    <form action="http://localhost:8123/api/invalidate" method="post">
+        <button type="submit">Logout</button>
+    </form>
     <div id="accountinfo" style="display: none;">
         <h3>Your Account</h3>
         <p>Balance: <span id="accountbalance"></span></p>
@@ -19,7 +24,7 @@
             <input type="number" name="amount" title="Amount" placeholder="Amount" />
             <input type="submit" value="Transfer" />
         </form>
-    </div>  
+    </div>
 </body>
 <script>
     fetch('http://localhost:8123/api/account', {
@@ -28,14 +33,14 @@
             'Content-Type': 'application/json'
         },
         mode: 'no-cors'
-    }).then(function(response) {
+    }).then(function (response) {
         return response.json();
-    }).then(function(data) {
+    }).then(function (data) {
         document.getElementById('accountname').innerHTML = data.Username;
         document.getElementById('welcomemessage').style.display = 'block';
         document.getElementById('accountbalance').innerHTML = data.Balance;
         document.getElementById('accountinfo').style.display = 'block';
-    }).catch(function(err) {
+    }).catch(function (err) {
         window.location.href = '/login';
     });
 
@@ -53,9 +58,9 @@
             },
             mode: 'no-cors',
             body: JSON.stringify(data)
-        }).then(function(response) {
+        }).then(function (response) {
             return response.json();
-        }).then(function(data) {
+        }).then(function (data) {
             console.log(data);
         });
     }

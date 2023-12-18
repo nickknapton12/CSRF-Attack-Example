@@ -1,16 +1,51 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Login | Bank of Cryptolicious</title>
 </head>
+
 <body>
     <h1>Login</h1>
-    <form action="http://localhost:8123/api/login" method="post" id="loginform">
-        <input type="text" name="username" title="Username" placeholder="Username" />
-        <input type="password" name="password" title="Password" placeholder="Password" />
+    <p style="color: red; display: none;" id="error">Error Signing In</p>
+    <form method="post" id="loginform">
+        <input type="text" name="username" title="Username" placeholder="Username" id="usernameField" />
+        <input type="password" name="password" title="Password" placeholder="Password" id="passwordField" />
         <input type="submit" value="Login" />
     </form>
     <p>As long as you don't share your password your life is secure!</p>
     <p>Don't have an account? <a href="/signup">Sign up now</a></p>
 </body>
+<script>
+    const form = document.querySelector("form");
+
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        const username = document.getElementById("usernameField").value;
+        const password = document.getElementById("passwordField").value;
+        console.log(password)
+
+        fetch('http://localhost:8123/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Username: username,
+                Password: password,
+            }),
+            mode: 'no-cors'
+        }).then(function (response) {
+            if (response.status == 200) window.location.href = "http://localhost:8123/account";
+            else {
+                const errMessage = document.getElementById("error");
+                errMessage.style.display = "block";
+            }
+        }).catch(function (err) {
+            const errMessage = document.getElementById("error");
+            errMessage.style.display = "block";
+        });
+    }
+</script>
+
 </html>
