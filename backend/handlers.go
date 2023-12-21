@@ -19,13 +19,13 @@ func PostInvalidate(sessions *Sessions) gin.HandlerFunc {
 		token, err := c.Request.Cookie("token")
 
 		if err != nil {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusBadRequest)
 			return
 		}
 
 		if token.Value == "" {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusBadRequest)
 			return
 		}
@@ -44,13 +44,13 @@ func GetLoginHandler(sessions *Sessions) gin.HandlerFunc {
 		token, err := c.Request.Cookie("token")
 
 		if err != nil {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
 
 		if token.Value == "" {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
@@ -95,7 +95,7 @@ func PostLoginHandler(sessions *Sessions, logins *Users) gin.HandlerFunc {
 		sessions.Sessions[userId] = *session
 		sessions.Lock.Unlock()
 
-		c.SetCookie("token", userId, 24*3600, "/", "localhost", false, false)
+		c.SetCookie("token", userId, 24*3600, "/", "www2.pr.iva.cy", false, false)
 		c.Redirect(http.StatusFound, "/account")
 	}
 }
@@ -105,13 +105,13 @@ func GetAccountHandler(sessions *Sessions, accounts *Accounts) gin.HandlerFunc {
 		token, err := c.Request.Cookie("token")
 
 		if err != nil {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
 
 		if token.Value == "" {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
@@ -121,7 +121,7 @@ func GetAccountHandler(sessions *Sessions, accounts *Accounts) gin.HandlerFunc {
 		sessions.Lock.Unlock()
 
 		if !ok {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
@@ -144,13 +144,13 @@ func PostTransferHandler(sessions *Sessions, accounts *Accounts) gin.HandlerFunc
 		token, err := c.Request.Cookie("token")
 
 		if err != nil {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
 
 		if token.Value == "" {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
@@ -160,13 +160,13 @@ func PostTransferHandler(sessions *Sessions, accounts *Accounts) gin.HandlerFunc
 		sessions.Lock.Unlock()
 
 		if !ok {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
 
 		if session.Expiry.Compare(time.Now()) <= 0 {
-			c.SetCookie("token", "", 0, "/", "localhost", false, false)
+			c.SetCookie("token", "", 0, "/", "www2.pr.iva.cy", false, false)
 			c.Status(http.StatusUnauthorized)
 			return
 		}

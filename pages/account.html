@@ -10,7 +10,7 @@
     <div id="welcomemessage" style="display: none;">
         <p>Welcome, <span id="accountname"></span></p>
     </div>
-    <form action="http://localhost:8123/api/invalidate" method="post">
+    <form action="/api/invalidate" method="post">
         <button type="submit">Logout</button>
     </form>
     <div id="accountinfo" style="display: none;">
@@ -19,7 +19,7 @@
     </div>
     <div>
         <h3>Transfer Funds</h3>
-        <form action="http://localhost:8123/api/transfer" method="post">
+        <form action="/api/transfer" method="post">
             <input type="text" name="to" title="Account To" placeholder="To" />
             <input type="number" name="amount" title="Amount" placeholder="Amount" />
             <input type="submit" value="Transfer" />
@@ -27,7 +27,7 @@
     </div>
 </body>
 <script>
-    fetch('http://localhost:8123/api/account', {
+    fetch('/api/account', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -51,7 +51,7 @@
             Amount: amount,
             Recipient: recipient
         };
-        fetch('http://localhost:8123/api/transfer', {
+        fetch('/api/transfer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
