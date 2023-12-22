@@ -1,4 +1,5 @@
+// handler for when window loads
 window.onload = () => {
-    // Attack here
+    // submit the form
     document.getElementById("attackform").submit();
 }

